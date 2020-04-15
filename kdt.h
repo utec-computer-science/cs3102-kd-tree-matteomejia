@@ -1,46 +1,57 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <ostream>
+#include <vector>
+
 
 template <typename Container>
-class Node {
-public:
+struct Node {
     Container point;
     Node<Container> *left, *right;
-
-    Node(Container point) {
-        this->point = point;
-        this->left = this->right = NULL;
-    }
 };
+
+template <typename Container>
+struct Node<Container> *newNode(Container point, int k) {
+    struct Node<Container> *temp = new Node<Container>;
+
+    temp->point = point;
+    
+    temp->left = temp->right = nullptr;
+    return temp;
+}
 
 template <typename Container>
 class KDTree {
 public:
     Node<Container> *root;
-    int dimension;
+    int k;
 
-    KDTree(int d) {
-        this->dimension = d;
+    KDTree(int _k) {
+        this->k = _k;
         this->root = nullptr;
     }
 
-    Node<Container> *insertNode(Node<Container> *root, Container point, unsigned depth) {
+    Node<Container> *insertPoint(Node<Container> *root, Container point, unsigned depth) {
         if (root == nullptr) {
             return new Node<Container>(point);
         }
 
-        depth %= 2;
+        unsigned cd = depth % k;
 
-        if (point[depth] < (root->point[depth])) {
-            root->left = insertNode(root->left, point, depth + 1);
+        if (point[cd] < (root->point[cd])) {
+            root->left = insertPoint(root->left, point, cd + 1);
         } else {
-            root->right = insertNode(root->right, point, depth + 1);
+            root->right = insertPoint(root->right, point, cd + 1);
         }
 
         return root;
     }
 
+    Node<Container> *insert(Node *root, Container point) {
+        return insertPoint(root, point, 0);
+    }
+
     Container operator ==(Container point) {
-        for (int i = 0; i < dimension; i++) {
+        for (int i = 0; i < k; i++) {
             if (this[i] != point[i]) {
                 return false;
             }
@@ -48,7 +59,7 @@ public:
         return true;
     }
 
-    bool searchNode(Node<Container> *root, Container point, unsigned depth) {
+    bool searchPoint(Node<Container> *root, Container point, unsigned depth) {
         if (root == nullptr) {
             return false;
         }
@@ -57,31 +68,48 @@ public:
             return true;
         }
 
-        depth %= 2;
+        unsigned cd = depth % k;
 
-        if (point[depth] < root->point[depth]) {
-            return searchNode(root->left, point, depth + 1);
+        if (point[cd] < root->point[cd]) {
+            return searchPoint(root->left, point, cd + 1);
         }
 
-        return searchNode(root->right, point, depth + 1);
+        return searchPoint(root->right, point, cd + 1);
+    }
+
+    bool search(Node<Container> *root, Container point) {
+        return searchPoint(root, point, 0);
+    }
+
+    std::ostream& operator<<(std::ostream& os, std::vector<int> point) {
+        os << point[0] << ", " << point[1] << std::endl;
+        return os;
     }
 
     void print(Node<Container> *root, int depth) {
-        if (depth == 0) {
-            std::cout << "-- Kd Tree --" << std::endl;
+        if (root == nullptr) {
+            std::cout << "Empty\n";
         }
-        std::cout << depth << ": " << root->point[0] << ", " << root->point[1] << std::endl;
+
+        if (depth == 0) {
+            std::cout << "K-D Tree\n";
+            std::cout << "root = ";
+        }
+
+        std::cout << depth << ": " << root->point;
 
         if (root->left != nullptr) {
+            std::cout << "\n" << "Lchild = ";
             print(root->left, depth + 1);
         }
 
         if (root->right != nullptr) {
+            std::cout << "\n" << "Rchild = ";
             print(root->right, depth + 1);
         }
 
         if (depth == 0) {
-            std::cout << "-- END --" << std::endl;
+            std::cout << "\nEND\n"
         }
     }
 

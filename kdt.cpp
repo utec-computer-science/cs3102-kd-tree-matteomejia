@@ -1,27 +1,24 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <fstream>
 #include "kdt.h"
 
 typedef std::vector<int> container;
-
 int main() {
-    KDTree<container> kdtree(2);
+    KDTree<container> kdt(2);
 
-    container point(2);
-    point[0] = 0;
-    point[1] = 0;
+    std::vector<container> points(1000);
 
-    kdtree.insertNode(kdtree.root, point, 0);
-
-    for (int i = 0; i < 100; i++) {
-        container cont(kdtree.dimension);
-        cont[0] = rand() % 1000;
-        cont[1] = rand() % 1000;
-        kdtree.insertNode(kdtree.root, cont, 0);
+    for (int i = 0; i < 1000; i++) {
+        points[i][0] = rand() % 1000;
+        points[i][1] = rand() % 1000;
     }
 
-    std::cout << kdtree.searchNode(kdtree.root, point, 0);
+    for (container cp : points) {
+        kdt.insert(kdt.root, cp);
+    }
 
-    kdtree.print(kdtree.root, 10);
+    kdt.print(kdt.root, 0);
 
     return 0;
 }
