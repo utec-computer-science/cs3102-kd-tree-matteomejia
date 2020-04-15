@@ -32,7 +32,7 @@ public:
 
     Node<Container> *insertPoint(Node<Container> *root, Container point, unsigned depth) {
         if (root == nullptr) {
-            return new Node<Container>(point);
+            return newNode(point, k);
         }
 
         unsigned cd = depth % k;
@@ -46,7 +46,7 @@ public:
         return root;
     }
 
-    Node<Container> *insert(Node *root, Container point) {
+    Node<Container> *insert(Node<Container> *root, Container point) {
         return insertPoint(root, point, 0);
     }
 
@@ -81,10 +81,10 @@ public:
         return searchPoint(root, point, 0);
     }
 
-    std::ostream& operator<<(std::ostream& os, std::vector<int> point) {
+    /*std::ostream& operator<<(std::ostream& os, std::vector<int> point) {
         os << point[0] << ", " << point[1] << std::endl;
         return os;
-    }
+    }*/
 
     void print(Node<Container> *root, int depth) {
         if (root == nullptr) {
@@ -96,7 +96,7 @@ public:
             std::cout << "root = ";
         }
 
-        std::cout << depth << ": " << root->point;
+        std::cout << depth << ": " <<  root->point[0] << ", " << root->point[1] << std::endl;
 
         if (root->left != nullptr) {
             std::cout << "\n" << "Lchild = ";
@@ -109,7 +109,7 @@ public:
         }
 
         if (depth == 0) {
-            std::cout << "\nEND\n"
+            std::cout << "\nEND\n";
         }
     }
 
